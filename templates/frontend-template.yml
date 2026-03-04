@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <NAME> # EDIT Name of the deployment
+  labels:
+    workload.user.cattle.io/workloadselector: apps.deployment-web-<NAME> # EDIT apps.deployment-web-<name>
+  namespace: <NAMESPACE>
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: apps.deployment-web-<NAME> # EDIT Make the same as lables above
+
+  template:
+    metadata:
+      labels:
+        workload.user.cattle.io/workloadselector: apps.deployment-web-<NAME> # EDIT Make the same as lables above
+    spec:
+      containers:
+        - image: <IMAGE> # EDIT Image name
+          imagePullPolicy: Always
+          name: container-0
+          ports:
+            - containerPort: <PORT> # EDIT Port number
+              name: <PORT>tcp
+              protocol: TCP
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+        - name: pulltoken
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: <NAME> # EDIT Make the same as deployment name
+  namespace: <NAMESPACE>
+spec:
+  ports:
+    - port: <PORT>
+  selector:
+    workload.user.cattle.io/workloadselector: apps.deployment-web-<NAME> # EDIT Make the same as labels above

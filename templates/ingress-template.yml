@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: <NAME> # Make the same as deployment name
+  namespace: <NAMESPACE> # Namespace of the deployment
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 256m
+
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: <HOST> # Domain name: example.byu.edu
+    http:
+      paths:
+      - backend: 
+          service:
+            name: <NAME> # MUST be ame as the deployment name
+            port:
+              number: <PORT> # Port number 3000, 80, or other
+        path: /
+        pathType: Prefix

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: overmind-agents # EDIT Name of the deployment
+  labels:
+    workload.user.cattle.io/workloadselector: apps.deployment-web-overmind-agents # EDIT apps.deployment-web-<name>
+  namespace: overmind
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: apps.deployment-web-overmind-agents # EDIT Make the same as lables above
+
+  template:
+    metadata:
+      labels:
+        workload.user.cattle.io/workloadselector: apps.deployment-web-overmind-agents # EDIT Make the same as lables above
+    spec:
+      containers:
+        - image: ghcr.io/zinkozapper/overmind-agents # EDIT Image name
+          imagePullPolicy: Always
+          name: container-0
+          ports:
+            - containerPort: 8080 # EDIT Port number
+              name: 8080tcp # EDIT <port number>tcp
+              protocol: TCP
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+        - name: pulltoken
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: overmind # EDIT Make the same as deployment name
+  namespace: overmind
+spec:
+  ports:
+  - port: 8080 # EDIT Port number
+  selector:
+    workload.user.cattle.io/workloadselector: apps.deployment-web-overmind-agents # EDIT Make the same as labels above

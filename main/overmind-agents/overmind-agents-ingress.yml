@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: overmind-agents # Make the same as deployment name
+  namespace: overmind # Namespace of the deployment
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 256m
+
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: overmind-agents.ls.byu.edu # Domain name: example.byu.edu
+    http:
+      paths:
+      - backend: 
+          service:
+            name: overmind-agents # MUST be ame as the deployment name
+            port:
+              number: 80 # Port number 3000, 80, or other
+        path: /
+        pathType: Prefix
