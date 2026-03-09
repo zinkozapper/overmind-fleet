@@ -18,7 +18,7 @@ spec:
         workload.user.cattle.io/workloadselector: apps.deployment-web-overmind-agents # EDIT Make the same as lables above
     spec:
       containers:
-        - image: ghcr.io/zinkozapper/overmind-agents # EDIT Image name
+        - image: ghcr.io/zinkozapper/overmind-agents@sha256:123c93d2470729ed1086468d79f6ed42fb0846ecd0b896096dd25627f14ab5a9
           imagePullPolicy: Always
           name: container-0
           ports:
